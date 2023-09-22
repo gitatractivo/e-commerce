@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// import config from "config";
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["jsonProtocol"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String             @id @default(cuid())
+  email         String             @unique
+  name          String
+  password      String
+  emailVerified DateTime?
+  sessions      Session[]
+  token         VerificationToken?
+  Product       Product[]
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String?
+  price     Float
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   String
+  images    File[]
+
+  @@unique([createdAt, id])
+}
+
+model File {
+  id        String   @id @default(cuid())
+  type      String
+  url       String
+  name      String
+  extension String
+  mime      String
+  size      Int
+  height    Int?
+  width     Int?
+  createdAt DateTime @default(now())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userAgent String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  valid     Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAT DateTime @updatedAt
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
