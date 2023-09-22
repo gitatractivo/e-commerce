@@ -7,6 +7,7 @@ import config from "config";
 import sendEmail from "../utils/mailer";
 import { signJwt, verifyJwt } from "../utils/jwt.utils";
 import { createSession } from "../service/session.service";
+import createHttpError from "http-errors"
 
 export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
