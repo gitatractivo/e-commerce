@@ -6,8 +6,9 @@ import { Omit } from "lodash";
 import config from "config";
 import sendEmail from "../utils/mailer";
 import { signJwt, verifyJwt } from "../utils/jwt.utils";
-import { createSession } from "../service/session.service";
+import { createSession, setTokensAndCookies } from "../service/session.service";
 import createHttpError from "http-errors"
+import { Role } from "@prisma/client";
 
 export const createUserHandler = async (
   req: Request<{}, {}, CreateUserInput>,
@@ -26,11 +27,14 @@ export const createUserHandler = async (
     });
     // const verificationLink = `http://yourwebsite.com/verify/${token}`;
 
+    const url = new URL("http://localhost:3000/verify");
+    url.searchParams.set("token",token);
+
     const resp = await sendEmail({
       to: user.email,
-      from: "gitanshutalwar@gmail.com",
+      from: "gitanshutalwartest@gmail.com",
       subject: "Verify your email",
-      html: `<p>Click <div href="">${token}</div> to verify your email.</p>`,
+      html: `<h1> <a href=${url}>Click here</a> to verify your email.</h1>`,
     });
     return res.status(201).json({
       message: "Verify Email to Continue...",
@@ -46,7 +50,7 @@ export const verifyUserHandler = async (
   res: Response
 ) => {
   try {
-    if (!req.query.token) {
+    if (!req.query.token ) {
       return res.status(401).json({ message: "Invalid or expired request" });
     }
 
@@ -57,47 +61,10 @@ export const verifyUserHandler = async (
     console.log("user",user)
     // Create a session
 
-    const session = await createSession(user.id, req.get("user-agent") || "");
+    const session = await createSession(res, user, req.get("user-agent") || "");
 
-    console.log("session",session)
-
-    // Create access token
-    const accessToken = signJwt(
-      {
-        ...user,
-        session: session.id,
-      },
-      { expiresIn: config.get("accessTokenTtl") }
-    );
-    // Create refresh token
-    const refreshToken = signJwt(
-      {
-        ...user,
-        session: session.id,
-      },
-      { expiresIn: config.get("refreshTokenTtl") }
-    );
-
-    // Send refresh & access token back
-
-    res.cookie("accessToken", accessToken, {
-      maxAge: 900000, // 15 mins
-      httpOnly: true,
-      domain: "localhost",
-      path: "/",
-      sameSite: "strict",
-      secure: false,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 3.154e10, // 1 year
-      httpOnly: true,
-      domain: "localhost",
-      path: "/",
-      sameSite: "strict",
-      secure: false,
-    });
-    return res.status(200).send({ accessToken, refreshToken ,message: "User verified successfully" });
+    
+    return res.status(200).send({message: "User verified successfully" });
 
    
 
@@ -117,7 +84,13 @@ export const loginUserHandler = async (
    
     console.log(req.body)
     //verify token
-    const user = await validatePassword(req.body);
+    const user:{
+      id:string,
+      email:string,
+      role:Role,
+      emailVerified:Date | null,
+      name:string,
+    } = await validatePassword(req.body);
 
     if(user.emailVerified===null){
       return res.status(401).json({ message: "Email not verified" });
@@ -126,54 +99,16 @@ export const loginUserHandler = async (
 
     // Create a session
 
-    const session = await createSession(user.id, req.get("user-agent") || "");
+    const session = await createSession(res,user, req.get("user-agent") || "");
 
-    // Create access token
-    const accessToken = signJwt(
-      {
-        ...user,
-        session: session.id,
-      },
-      { expiresIn: config.get("accessTokenTtl") }
-    );
-    // Create refresh token
-    const refreshToken = signJwt(
-      {
-        ...user,
-        session: session.id,
-      },
-      { expiresIn: config.get("refreshTokenTtl") }
-    );
-
-    // Send refresh & access token back
-
-    res.cookie("accessToken", accessToken, {
-      maxAge: 900000, // 15 mins
-      httpOnly: true,
-      domain: "localhost",
-      path: "/",
-      sameSite: "strict",
-      secure: false,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      maxAge: 3.154e10, // 1 year
-      httpOnly: true,
-      domain: "localhost",
-      path: "/",
-      sameSite: "strict",
-      secure: false,
-    });
+    
     return res
       .status(200)
       .send({
-        accessToken,
-        refreshToken,
         message: "User verified successfully",
       });
 
-    // Process user verification and response
-    // For example, you can update the user's verification status in the database
+    
   } catch (error: any) {
     log.error(error.message);
     return res.status(409).json({ message: error.message });

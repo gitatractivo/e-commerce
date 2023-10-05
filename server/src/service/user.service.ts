@@ -1,12 +1,12 @@
 import { omit } from "lodash";
 import logger from "../utils/logger";
 import prisma from "../utils/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
 import { CreateUserInput, LoginUserInput } from "../schema/user.schema";
 import { verifyJwt } from "../utils/jwt.utils";
-import { TokenData } from '../controllers/user.controller';
+import { TokenData } from "../controllers/user.controller";
 
 export async function createUser(input: CreateUserInput) {
   try {
@@ -15,25 +15,31 @@ export async function createUser(input: CreateUserInput) {
     });
 
     if (exists) {
-      throw new Error("User already exists for "+input.email);
+      throw new Error("User already exists for " + input.email);
     }
 
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = bcrypt.hashSync(input.password, salt);
 
-    const user = await prisma.user.create({
-      data: {
-        email: input.email,
-        password: hashedPassword,
-        name: input.name,
-        token: {
-          create: {},
-        },
+    const data:(Prisma.Without<Prisma.UserCreateInput, Prisma.UserUncheckedCreateInput> & Prisma.UserUncheckedCreateInput) | (Prisma.Without<Prisma.UserUncheckedCreateInput, Prisma.UserCreateInput> & Prisma.UserCreateInput) = {
+      email: input.email,
+      password: hashedPassword,
+      name: input.name,
+      token: {
+        create: {},
       },
+    };
+    if (input.role === "ADMIN") {
+      data.role = Role.ADMIN;
+    }
+
+    const user = await prisma.user.create({
+      data,
       select: {
         email: true,
         name: true,
         id: true,
+        role: true,
         token: {
           select: {
             id: true,
@@ -47,17 +53,11 @@ export async function createUser(input: CreateUserInput) {
   }
 }
 
-
-
-
-export async function validatePassword({
-  email,
-  password,
-}: LoginUserInput) {
+export async function validatePassword({ email, password }: LoginUserInput) {
   const user = await prisma.user.findFirst({
-    where:{
+    where: {
       email,
-    }
+    },
   });
   if (!user) {
     throw new Error("User not found");
@@ -76,12 +76,9 @@ export async function validatePassword({
 
 export async function findUser(query: any) {
   return prisma.user.findFirst({
-    where:query,
-  })
-  
+    where: query,
+  });
 }
-
-
 
 export async function verifyUser(token: string) {
   try {
@@ -110,8 +107,8 @@ export async function verifyUser(token: string) {
       throw new Error("User not found");
     }
 
-    if(!!user.emailVerified){
-      throw new Error("Email already verified")
+    if (!!user.emailVerified) {
+      throw new Error("Email already verified");
     }
 
     if (user?.token?.id !== decoded?.tokenId) {
@@ -119,17 +116,14 @@ export async function verifyUser(token: string) {
     }
 
     const updatedUser = await prisma.user.update({
-      where:{
+      where: {
         id: userId,
       },
-      data:{
+      data: {
         emailVerified: new Date(),
         token: undefined,
-      }
-    })
-
-
-    
+      },
+    });
 
     // Perform the rest of the verification steps here
     // For example, update user verification status
@@ -139,5 +133,3 @@ export async function verifyUser(token: string) {
     throw new Error(error.message);
   }
 }
-
-
