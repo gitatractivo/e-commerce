@@ -12,5 +12,7 @@ router.post("/verify",validateResource(verifyUserSchema), verifyUserHandler)
 
 router.post("/login",validateResource(loginUserSchema), loginUserHandler)
 
+router.post("/makeMerchant",validateResource(loginUserSchema), loginUserHandler)
+
 
 export default router;
