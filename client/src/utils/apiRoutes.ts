@@ -7,4 +7,5 @@ export const apiRoute = {
   forgotPassword: `${BASEURL}/user/forgot-password`,
   verifyForgotPassword: `${BASEURL}/user/verify-password`,
   changePassword: `${BASEURL}/user/change-password`,
+  resetPassword: `${BASEURL}/user/reset-password`,
 };

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import log from "../utils/logger";
-import { changePassword, createNewToken, createUser, findUser, validatePassword, verifyForgotUser, verifyUser } from "../service/user.service";
-import { CreateUserInput, LoginUserInput, ForgotPasswordInput, VerifyUserInput, ChangePasswordInput } from "../schema/user.schema";
+import { changePassword, createNewToken, createUser, findUser, resetPassword, validatePassword, verifyForgotUser, verifyUser } from "../service/user.service";
+import { CreateUserInput, LoginUserInput, ForgotPasswordInput, VerifyUserInput, ChangePasswordInput, ResetPasswordInput } from "../schema/user.schema";
 import { Omit, omit } from 'lodash';
 import config from "config";
 import sendEmail from "../utils/mailer";
@@ -204,6 +204,30 @@ export const changePasswordUserHandler = async (
     //verify token
     
     
+
+    return res.status(200).send({ message: "Password updated successfully" });
+  } catch (error: any) {
+    log.error(error.message);
+    return res.status(409).json({ error: error.message });
+  }
+};
+export const resetPasswordUserHandler = async (
+  req: Request<{}, {}, ResetPasswordInput>,
+  res: Response
+) => {
+  try {
+    const user = res.locals.user;
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid or expired request" });
+    }
+    const updatedUser = await resetPassword(user.id, req.body);
+
+    if(!updatedUser){
+      return res.status(401).json({ message: "Something went wrong try again" });
+    } 
+
+    //verify token
 
     return res.status(200).send({ message: "Password updated successfully" });
   } catch (error: any) {
