@@ -4,7 +4,7 @@ import prisma from "../utils/prisma";
 import { Prisma, Role } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { nanoid } from "nanoid";
-import { CreateUserInput, LoginUserInput } from "../schema/user.schema";
+import { CreateUserInput, LoginUserInput, ResetPasswordInput } from "../schema/user.schema";
 import { verifyJwt } from "../utils/jwt.utils";
 import { TokenData } from "../controllers/user.controller";
 
@@ -218,6 +218,42 @@ export async function createNewToken(id: string) {
 export async function changePassword(id:string,password:string){
   const salt = await bcrypt.genSalt(12);
   const hashedPassword = bcrypt.hashSync(password, salt);
+  return await prisma.user.update({
+    where:{
+      id,
+    },
+    data:{
+      password:hashedPassword,
+    }
+  })
+}
+export async function resetPassword(id:string,input:ResetPasswordInput){
+  const user = await prisma.user.findUnique({
+    where:{
+      id,
+    },
+    select:{
+      password:true,
+    }
+  })
+
+  if(!user){
+    throw new Error("User not found");
+  }
+
+  const isValid = await bcrypt
+    .compare(input.passwordOld, user.password)
+    .catch((e) => false);
+
+  if (!isValid) {
+    throw new Error("Email or Password is Invalid");
+  }
+  
+
+
+
+  const salt = await bcrypt.genSalt(12);
+  const hashedPassword = bcrypt.hashSync(input.passwordNew, salt);
   return await prisma.user.update({
     where:{
       id,

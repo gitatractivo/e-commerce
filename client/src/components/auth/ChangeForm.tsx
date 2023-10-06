@@ -36,10 +36,22 @@ interface Props {}
 
 const schema = z
   .object({
-    
-    password: z.string({
-      required_error: "Password is required",
-    })
+    passwordOld: z
+      .string({
+        required_error: "Password is required",
+      })
+      .min(6, "Password is too short - should be min 6 chars")
+      .refine(
+        (value) => /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).+$/.test(value),
+        {
+          message:
+            "Password must contain at least one uppercase letter, one digit, and one special character",
+        }
+      ),
+    passwordNew: z
+      .string({
+        required_error: "Password is required",
+      })
       .min(6, "Password is too short - should be min 6 chars")
       .refine(
         (value) => /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()]).+$/.test(value),
@@ -51,9 +63,8 @@ const schema = z
     passwordConfirmation: z.string({
       required_error: "Password confirmation is required",
     }),
-    
   })
-  .refine((data) => data.password === data.passwordConfirmation, {
+  .refine((data) => data.passwordNew === data.passwordConfirmation, {
     message: "Passwords do not match",
     path: ["passwordConfirmation"],
   });
@@ -65,8 +76,8 @@ const SignUpForm: React.FC<Props> = () => {
   const form = useForm<IForm>({
     resolver: zodResolver(schema),
     defaultValues: {
-      
-      password: "",
+      passwordOld:"",
+      passwordNew: "",
       passwordConfirmation:"",
       
     },
@@ -75,7 +86,7 @@ const SignUpForm: React.FC<Props> = () => {
   const onSubmit = async(data: IForm) => {
     console.log(data)
     
-    const res = await axios.post(apiRoute.changePassword, data, {
+    const res = await axios.post(apiRoute.resetPassword, data, {
       withCredentials: true,
     });
 
@@ -100,7 +111,27 @@ const SignUpForm: React.FC<Props> = () => {
             
             <FormField
               control={form.control}
-              name="password"
+              name="passwordOld"
+              render={({ field }) => (
+                <FormItem className=" ">
+                  <FormLabel>Current Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="test@abc.com"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  {/* <FormDescription>
+                    Enter your email address.
+                  </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="passwordNew"
               render={({ field }) => (
                 <FormItem className=" ">
                   <FormLabel>New Password</FormLabel>

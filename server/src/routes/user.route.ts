@@ -3,6 +3,7 @@ import {
   createUserHandler,
   forgotPasswordUserHandler,
   loginUserHandler,
+  resetPasswordUserHandler,
   verifyForgotPasswordUserHandler,
   verifyUserHandler,
 } from "../controllers/user.controller";
@@ -14,6 +15,7 @@ import {
   createUserSchema,
   forgotPassword,
   loginUserSchema,
+  resetPassword,
   verifyUserSchema,
 } from "../schema/user.schema";
 import requireUser from "../middleware/requireUser";
@@ -41,6 +43,11 @@ router.post("/change-password", [
   requireUser,
   validateResource(changePassword),
 ],changePasswordUserHandler
+);
+router.post(
+  "/reset-password",
+  [requireUser, validateResource(resetPassword)],
+  resetPasswordUserHandler
 );
 
 router.post(

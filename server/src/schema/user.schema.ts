@@ -72,9 +72,7 @@ export const resetPassword = object({
     passwordConfirmation: string({
       required_error: "Confirm Password is required",
     }),
-    email: string({
-      required_error: "Email is required",
-    }).email("Not a valid email"),
+    
   }).refine((data) => data.passwordNew === data.passwordConfirmation, {
     message: "Passwords do not match",
     path: ["passwordConfirmation"],
