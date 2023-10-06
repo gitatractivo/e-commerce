@@ -32,7 +32,6 @@ app.use(
 app.use(deserializeUser);
 
 
-console.log(config.get("smtp"))
 
 // routes(app);
 app.use(router)

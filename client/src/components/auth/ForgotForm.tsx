@@ -27,6 +27,7 @@ import { z } from "zod";
 import axios from "axios";
 import { apiRoute } from "@/utils/apiRoutes";
 import { useRouter } from "next/navigation";
+import { toast } from "../ui/use-toast";
 
 
 
@@ -36,7 +37,7 @@ const schema = z.object({
   email: z
     .string({ required_error: "Email is Required" })
     .email({ message: "Please enter a valid Email" }),
-  password: z.string({ required_error: "Password is Required" }).min(6),
+  
 });
 
 export type IForm = z.infer<typeof schema>;
@@ -47,29 +48,32 @@ const LoginForm: React.FC<Props> = () => {
     resolver: zodResolver(schema),
     defaultValues: {
       email: "",
-      password: "",
+      
     },
   });
 
   const onSubmit = async(data: IForm) => {
     console.log(data)
     
-    const res = await axios.post(apiRoute.login, data, {
+    const res = await axios.post(apiRoute.forgotPassword, data, {
       withCredentials: true,
     });
-    // if(res.status===200){
-    //   router.push("/")
-    // }
+    if(res.status===201){
+      toast({
+        title:"Success",
+        description: res.data.message,
+      })
+    }
   };
   return (
     <Card className="w-full max-w-[400px]">
       <CardHeader>
-        <CardTitle className="pb-2">Login</CardTitle>
-        <CardDescription>Login to your account in one-click.</CardDescription>
+        <CardTitle className="pb-2">Forgot Password</CardTitle>
+        <CardDescription>Enter Email To Reset Password</CardDescription>
       </CardHeader>
       <CardContent className="">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
             <FormField
               control={form.control}
               name="email"
@@ -86,44 +90,15 @@ const LoginForm: React.FC<Props> = () => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className=" ">
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="test@abc.com"
-                      type="password"
-                      {...field}
-                    />
-                  </FormControl>
-                  {/* <FormDescription>
-                    Enter your email address.
-                  </FormDescription> */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Link href="/forgot-password" className="text-sm self-end space-y-2 text-muted-foreground">Forgot Password?</Link>
-            <Button type="submit" className="w-full mt-2">
-              Login
+            
+            <Button type="submit" className="w-full mt-2 space-y-2">
+              Submit
             </Button>
           </form>
         </Form>
       </CardContent>
 
-      <Separator className="mb-4" />
-      <CardFooter className="flex flex-start justify-center gap-2 ">
-        <h3 className="text-sm text-muted-foreground">New Here?</h3>
-        <Link
-          href="/signup"
-          className="text-sm text-foreground hover:underline"
-        >
-          Create Account
-        </Link>
-      </CardFooter>
+      
     </Card>
   );
 };

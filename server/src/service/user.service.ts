@@ -133,3 +133,97 @@ export async function verifyUser(token: string) {
     throw new Error(error.message);
   }
 }
+export async function verifyForgotUser(token: string) {
+  try {
+    const { decoded, valid, expired } = verifyJwt<TokenData>(token);
+
+    if (!valid) {
+      throw new Error("Invalid Login, Try Again");
+    }
+
+    if (expired) {
+      throw new Error("Link Expired, Try Logging In");
+    }
+
+    const userId = decoded?.userId;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+      include: {
+        token: true,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    
+
+    if (user?.token?.id !== decoded?.tokenId) {
+      throw new Error("Email verification failed.. Try Loging In..");
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        emailVerified: new Date(),
+        token: undefined,
+      },
+    });
+
+    // Perform the rest of the verification steps here
+    // For example, update user verification status
+
+    return updatedUser;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
+export async function createNewToken(id: string) {
+  await prisma.verificationToken.delete({
+    where:{
+      userId: id,
+    }
+  })
+
+  return await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      token:{
+        create:{},
+      }
+    },
+    select: {
+        email: true,
+        name: true,
+        id: true,
+        role: true,
+        token: {
+          select: {
+            id: true,
+          },
+        },
+      },
+  });
+}
+
+export async function changePassword(id:string,password:string){
+  const salt = await bcrypt.genSalt(12);
+  const hashedPassword = bcrypt.hashSync(password, salt);
+  return await prisma.user.update({
+    where:{
+      id,
+    },
+    data:{
+      password:hashedPassword,
+    }
+  })
+}

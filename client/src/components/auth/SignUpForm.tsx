@@ -28,6 +28,7 @@ import axios from "axios";
 import { apiRoute } from "@/utils/apiRoutes";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import SignUp from '../../app/(auth)/signup/page';
 
 
 
@@ -80,7 +81,7 @@ const SignUpForm: React.FC<Props> = () => {
   const onSubmit = async(data: IForm) => {
     console.log(data)
     
-    const res = await axios.post("http://localhost:5000/user/create", data, {
+    const res = await axios.post(apiRoute.register, data, {
       withCredentials: true,
     });
 
@@ -96,12 +97,12 @@ const SignUpForm: React.FC<Props> = () => {
   return (
     <Card className="w-full max-w-[400px]">
       <CardHeader>
-        <CardTitle className="pb-2">Login</CardTitle>
-        <CardDescription>Login to your account in one-click.</CardDescription>
+        <CardTitle className="pb-2">SignUp</CardTitle>
+        <CardDescription>SignUp in one-click.</CardDescription>
       </CardHeader>
       <CardContent className="">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
             <FormField
               control={form.control}
               name="name"
@@ -111,9 +112,6 @@ const SignUpForm: React.FC<Props> = () => {
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
                   </FormControl>
-                  {/* <FormDescription>
-                    Enter your email address.
-                  </FormDescription> */}
                   <FormMessage />
                 </FormItem>
               )}
@@ -175,7 +173,7 @@ const SignUpForm: React.FC<Props> = () => {
               )}
             />
             <Button type="submit" className="w-full mt-2">
-              Login
+              SignUp
             </Button>
           </form>
         </Form>
@@ -184,10 +182,7 @@ const SignUpForm: React.FC<Props> = () => {
       <Separator className="mb-4" />
       <CardFooter className="flex flex-start justify-center gap-2 ">
         <h3 className="text-sm text-muted-foreground">Already a User?</h3>
-        <Link
-          href="/login"
-          className="text-sm text-foreground hover:underline"
-        >
+        <Link href="/login" className="text-sm text-foreground hover:underline">
           Login
         </Link>
       </CardFooter>
