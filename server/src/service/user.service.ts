@@ -263,3 +263,15 @@ export async function resetPassword(id:string,input:ResetPasswordInput){
     }
   })
 }
+
+
+export const makeMerchant = async (id:string) => {
+  return await prisma.user.update({
+    where:{
+      id,
+    },
+    data:{
+      role:Role.MERCHANT,
+    }
+  })
+}
