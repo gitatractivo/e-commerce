@@ -3,6 +3,7 @@ import {
   createUserHandler,
   forgotPasswordUserHandler,
   loginUserHandler,
+  merchantUserHandler,
   resetPasswordUserHandler,
   verifyForgotPasswordUserHandler,
   verifyUserHandler,
@@ -51,9 +52,9 @@ router.post(
 );
 
 router.post(
-  "/makeMerchant",
-  validateResource(loginUserSchema),
-  loginUserHandler
+  "/make-merchant",
+  requireUser,
+  merchantUserHandler
 );
 
 export default router;
