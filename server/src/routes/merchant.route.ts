@@ -120,4 +120,6 @@ router.get("/size", [requireMerchant, validateResource(getAllSizesSchema)],getAl
 
 router.get("/category",[requireMerchant],getAllCategoriesHandler)
 
+
+
 export default router;
