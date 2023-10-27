@@ -14,9 +14,8 @@ interface props {}
 const Page: React.FC<props> = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const ref = useRef(0)
+  const ref = useRef(0);
 
-  
   const verify = useCallback(async () => {
     const token = searchParams.get("token");
     const password = searchParams.get("password");
@@ -36,19 +35,19 @@ const Page: React.FC<props> = () => {
     url.searchParams.set("token", token);
     console.log(url.href);
 
-    const data= {
+    const data = {
       token,
-    }
+    };
 
     try {
-      const resp = await axios.post(url.href,data, { withCredentials: true });
+      const resp = await axios.post(url.href, data, { withCredentials: true });
       if (resp.status === 200) {
         toast({
           title: "Email Verified Successfully",
         });
-          if (!!password) {
-            router.push('/forgot-password/change');
-          } else router.push('/');
+        if (!!password) {
+          router.push("/forgot-password/change");
+        } else router.push("/");
       } else {
         toast({
           title: "Error verifying Email try again",
@@ -60,10 +59,10 @@ const Page: React.FC<props> = () => {
       // Handle error appropriately
       console.error("Verification error:", error);
     }
-  }, [ router]);
+  }, [router]);
 
   useEffect(() => {
-    console.log("first",++ref.current);
+    console.log("first", ++ref.current);
     verify();
   }, []);
 

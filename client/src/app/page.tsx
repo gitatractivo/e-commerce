@@ -2,7 +2,6 @@
 import NavBar from "@/components/NavBar";
 import Carousel from "@/components/home/Carousel";
 import Image from "next/image";
-import { BASE_URL } from "@/utils/base";
 import { apiRoute } from "@/utils/apiRoutes";
 import { useEffect } from "react";
 export default function Home() {

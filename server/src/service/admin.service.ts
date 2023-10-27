@@ -7,6 +7,7 @@ import {
 } from "../schema/admin.schema";
 import prisma from "../utils/prisma";
 import log from "../utils/logger";
+import { Prisma,Banner } from "@prisma/client";
 
 // crud on category
 export const createCategory = async (data: CreateCategoryInput) => {
@@ -181,6 +182,19 @@ export const getAllBannersByCategoryId = async(categoryId:string)=>{
   } catch (error: any) {
     log.error(error);
     throw new Error(error);
+  }
+}
+
+
+export const getProducts = async(where:Prisma.ProductWhereInput)=>{
+  try {
+    const products = await prisma.product.findMany({
+      where
+    })
+    return products
+  } catch (error:any) {
+    log.error(error);
+    throw new Error(error.message as string);
   }
 }
 

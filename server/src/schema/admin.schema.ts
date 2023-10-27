@@ -93,4 +93,6 @@ export const getBannerByCategorySchema = z.object({
   })
 })
 
+
+
 export type GetBannerByCategoryId = z.TypeOf<typeof getBannerByCategorySchema>["params"]
