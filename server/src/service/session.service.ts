@@ -43,7 +43,7 @@ export async function createSession(
 
   // Set access token cookie
   res.cookie("accessToken", accessToken, {
-    maxAge: 900000, // 15 mins
+    maxAge: 3.154e10, // 15 mins
     httpOnly: true,
     domain: "localhost",
     path: "/",

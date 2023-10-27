@@ -12,7 +12,7 @@ export default {
     secure: false,
   },
   saltWorkFactor: 10,
-  accessTokenTtl: "15m",
+  accessTokenTtl: "15d",
   refreshTokenTtl: "1y",
   publicKey: `-----BEGIN PUBLIC KEY-----
 MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAx4RPL42UETv/KRl8pt5I

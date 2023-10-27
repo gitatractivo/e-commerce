@@ -21,6 +21,7 @@ import {
 } from "../schema/admin.schema";
 import { deleteBannerById, getCategoryById } from "../service/admin.service";
 import { getAllCategories } from "../service/merchant.service";
+import { getProductHandler } from "../controllers/merchant.controllers";
 
 const router = express.Router();
 
@@ -60,7 +61,7 @@ router.post(
   createBannerHandler
 );
 
-router.put(
+router.patch(
   "/banner/:bannerId",
   [requireAdmin, validateResource(editBannerSchema)],
   editBannerHandler
@@ -84,6 +85,12 @@ router.get(
   getAllBannersByCategoryIdHandler
 );
 
+
+
 router.get("/banner", [requireAdmin], getAllBannersHandler);
+
+//TODO: add where clause schema
+router.get("products",[requireAdmin],
+getProductHandler)
 
 export default router;

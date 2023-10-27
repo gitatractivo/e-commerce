@@ -20,6 +20,7 @@ import {
   getAllBannersByCategoryId,
   getBannerById,
   getCategoryById,
+  getProducts,
 } from "../service/admin.service";
 
 export const createCategoryHandler = async (
@@ -204,3 +205,20 @@ export const getAllBannersByCategoryIdHandler = async (
     });
   }
 };
+
+export const getProductsHandler = async(
+  req:Request<{},{},{}>,
+  res:Response
+)=>{
+  try {
+    const products = await getProducts(req.query)
+    return res.status(200).json({
+      message: "Products Fetched Successfully",
+      products,
+    });
+  } catch (error:any) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+}
