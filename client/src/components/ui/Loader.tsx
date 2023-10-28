@@ -6,7 +6,7 @@ import omit from 'lodash/omit'
 
 interface Props extends React.HTMLAttributes<SVGSVGElement > {}
 
-const loader = (props: Props) => {
+const Loader = (props: Props) => {
   const classes = cn('animate-spin  duration-500',props.className)
   props = omit(props, ['className'])
     return (
@@ -14,4 +14,4 @@ const loader = (props: Props) => {
   )
 }
 
-export default loader
+export default Loader

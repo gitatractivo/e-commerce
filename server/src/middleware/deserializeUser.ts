@@ -9,7 +9,7 @@ const deserializeUser = async (
   next: NextFunction
 ) => {
 
-  console.log(req.headers.cookie)
+  // console.log(req.headers.cookie)
   const accessToken =
     get(req, "cookies.accessToken") ||
     get(req, "headers.authorization", "").replace(/^Bearer\s/, "");
@@ -21,12 +21,12 @@ const deserializeUser = async (
     return next();
   }
 
-  console.log("accessToken", accessToken);
+  // console.log("accessToken", accessToken);
   
 
   const { decoded, expired } = verifyJwt(accessToken);
 
-  console.log("decoded",decoded)
+  // console.log("decoded",decoded)
 
   if (decoded) {
     res.locals.user = decoded;

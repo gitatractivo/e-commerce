@@ -49,7 +49,7 @@ const MerchantAdminNav = ({ isAdmin }: Props) => {
     {
       title: "Banner",
       path: "/dashboard/admin/banner",
-      active: pathname === "/dashboard/admin/banner",
+      active: pathname.includes("/dashboard/admin/banner"),
       admin: true,
     },
     {
@@ -72,13 +72,27 @@ const MerchantAdminNav = ({ isAdmin }: Props) => {
       className="flex flex-row sm:items-center justify-end space-x-4 w-full
     items-end lg:space-x-6"
     >
-      {routes.map((route, index) => (
+      <Link
+        key={"/dashboard"}
+        href={"/dashboard"}
+        className={cn(
+          "hidden sm:block text-sm font-medium transition-colors hover:text-primary",
+          pathname==="/dashboard"
+            ? "text-foreground "
+            : "text-muted-foreground"
+        )}
+      >
+        {"Dashboard"}
+      </Link>
+      {routes.slice(1).map((route, index) => (
         <Link
           key={route.path}
           href={route.path}
           className={cn(
             "hidden sm:block text-sm font-medium transition-colors hover:text-primary",
-            route.active ? "text-foreground " : "text-muted-foreground"
+            pathname.includes(route.path)
+              ? "text-foreground "
+              : "text-muted-foreground"
           )}
         >
           {route.title}
