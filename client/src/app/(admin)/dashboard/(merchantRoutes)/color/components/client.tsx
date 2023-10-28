@@ -7,14 +7,14 @@ import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
 import { useParams } from "next/navigation";
-import { columns, BannerColumn } from "./columns";
+import { columns, CategoryColumn } from "./columns";
 
-interface BannerClientProps {
-  data: BannerColumn[];
+interface CategoryClientProps {
+  data: CategoryColumn[];
 }
 
 
-const BannerClient = ({data}: BannerClientProps) => {
+const CategoryClient = ({data}: CategoryClientProps) => {
   
   const router = useRouter();
   console.log(data)
@@ -22,8 +22,8 @@ const BannerClient = ({data}: BannerClientProps) => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title="Banner" description="Manage Banner" />
-        <Button onClick={() => router.push(`/dashboard/admin/banner/new`)}>
+        <Heading title="Category" description="Manage Category" />
+        <Button onClick={() => router.push(`/dashboard/admin/category/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add
         </Button>
       </div>
@@ -35,4 +35,4 @@ const BannerClient = ({data}: BannerClientProps) => {
   );
 };
 
-export default BannerClient;
+export default CategoryClient;

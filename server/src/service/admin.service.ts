@@ -58,13 +58,18 @@ export const getCategoryById = async (id: string) => {
       where: {
         id,
       },
-      select: {
+      include: {
         products: {
           select: {
             images: true,
           },
           take: 5,
         },
+        _count:{
+          select:{
+            products:true
+          }
+        }
       },
     });
     return category;
@@ -87,6 +92,27 @@ export const deleteCategoryById = async (id: string) => {
   }
 };
 
+export const getAllCategories = async () => { 
+  try {
+    const categories = await prisma.category.findMany({
+      include: {
+        _count: {
+          select:{
+            products:true
+          }
+        },
+      },
+    });
+    return categories;
+  } catch (error: any) {
+    log.error(error);
+    throw new Error(error);
+  }
+}
+
+
+
+
 // crud on banner
 
 export const createBanner = async (data: CreateBannerInput) => {
@@ -107,6 +133,7 @@ export const editBanner = async (
   bannerId: string
 ) => {
   try {
+    console.log("edit banner data",data)
     const banner = await prisma.banner.update({
       where: {
         id: bannerId,

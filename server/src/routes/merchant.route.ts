@@ -17,6 +17,8 @@ import {
   editSizeHandler,
   getAllSizesHandler,
   getAllCategoriesHandler,
+  getSizeHandler,
+  deleteSizeHandler,
 } from "../controllers/merchant.controllers";
 
 const router = express.Router();
@@ -104,18 +106,18 @@ router.put(
   editSizeHandler
 );
 router.get(
-  "/size",
+  "/size/:sizeId",
   [requireMerchant, validateResource(getOrDeleteSizeSchema)],
-  editSizeHandler
+  getSizeHandler
 );
 router.delete(
   "/size/:sizeId",
   [requireMerchant, validateResource(getOrDeleteSizeSchema)],
-  editSizeHandler
+  deleteSizeHandler
 );
 
 
-router.get("/size", [requireMerchant, validateResource(getAllSizesSchema)],getAllSizesHandler)
+router.get("/size", [requireMerchant, ],getAllSizesHandler)
 
 
 router.get("/category",[requireMerchant],getAllCategoriesHandler)

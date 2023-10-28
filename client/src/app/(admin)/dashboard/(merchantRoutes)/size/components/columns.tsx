@@ -4,32 +4,31 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { CellAction } from "./cell-action";
 
-export type BannerColumn = {
+export type SizeColumn = {
   id: string;
   name: string;
-  description: string;
-  categoryId?:string;
+  value: string;
   createdAt: string;
+  
 };
 
-export const columns: ColumnDef<BannerColumn>[] = [
+export const columns: ColumnDef<SizeColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "description",
-    header: "Description",
+    accessorKey: "value",
+    header: "Value",
   },
-  {
-    accessorKey: "categoryId",
-    header: "Category",
-  },
+  
+  
   {
     accessorKey: "createdAt",
     header: "Date",
     
   },
+  
   {
     id: "actions",
     cell: ({ row }) => <CellAction data={row.original} />,

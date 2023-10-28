@@ -98,7 +98,10 @@ export const getAllProductsHandler = async (
 
     const products = await getAllProductsByMerchant(user.id);
 
-    return res.status(201);
+    return res.status(201).json({
+      message: "Product updated successfully",
+      products,
+    });
   } catch (error: any) {
     console.log(error);
     return res.status(500).json({
@@ -291,10 +294,12 @@ export const deleteSizeHandler = async (
 };
 
 export const getAllSizesHandler = async (
-  req: Request<{},{},GetAllSizesInput>,
+  req: Request<{},{},{}>,
   res:Response
 )=>{
-  const sizes= await getAllSize(req.body.categoryId)
+    console.log("merchantsizegetall controller");
+
+  const sizes= await getAllSize()
   return res.status(200).json({
     message:"Size Successfully Fetched",
     sizes,

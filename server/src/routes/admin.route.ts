@@ -2,11 +2,14 @@ import express from "express";
 import {
   createBannerHandler,
   createCategoryHandler,
+  deleteBannerHandler,
   editBannerHandler,
   editCategoryHandler,
   getAllBannersByCategoryIdHandler,
   getAllBannersHandler,
+  getAllCategoriesHandler,
   getBannerByIdHandler,
+  getCategoryHandler,
 } from "../controllers/admin.controllers";
 import requireAdmin from "../middleware/requireAdmin";
 import validateResource from "../middleware/validateResrouce";
@@ -22,6 +25,7 @@ import {
 import { deleteBannerById, getCategoryById } from "../service/admin.service";
 import { getAllCategories } from "../service/merchant.service";
 import { getProductHandler } from "../controllers/merchant.controllers";
+
 
 const router = express.Router();
 
@@ -42,16 +46,16 @@ router.put(
 router.get(
   "/category/:categoryId",
   [requireAdmin, validateResource(getDeleteCategoryByIdSchema)],
-  getCategoryById
+  getCategoryHandler
 );
 
 router.delete(
   "/category/:categoryId",
   [requireAdmin, validateResource(getDeleteCategoryByIdSchema)],
-  deleteBannerById
+  deleteBannerHandler
 );
 
-router.get("/category", [requireAdmin], getAllCategories);
+router.get("/category", [requireAdmin], getAllCategoriesHandler);
 
 // banner routes
 
@@ -76,7 +80,7 @@ router.get(
 router.delete(
   "/banner/:bannerId",
   [requireAdmin, validateResource(getDeleteBannerByIdSchema)],
-  deleteBannerById
+  deleteBannerHandler
 );
 
 router.get(

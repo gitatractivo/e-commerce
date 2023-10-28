@@ -18,6 +18,7 @@ import {
   editCategory,
   getAllBanners,
   getAllBannersByCategoryId,
+  getAllCategories,
   getBannerById,
   getCategoryById,
   getProducts,
@@ -94,6 +95,24 @@ export const deleteCategoryHandler = async (
     });
   }
 };
+
+export const getAllCategoriesHandler = async(
+  req:Request<{}, {}, {}>,
+  res:Response
+)=>{
+  try {
+    const categories = await getAllCategories();
+    return res.status(200).json({
+      message: "Categories Fetched Successfully",
+      categories,
+    });;
+  } catch (error:any) {
+    return res.status(400).json({
+      message: error.message,
+    });
+  }
+}
+
 
 export const createBannerHandler = async (
   req: Request<{}, {}, CreateBannerInput>,

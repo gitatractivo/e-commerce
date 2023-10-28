@@ -69,7 +69,22 @@ export type CreateBannerInput = z.TypeOf<typeof createBannerSchema>["body"];
 
 export const editBannerSchema = z.object({
   ...bannerParams,
-  ...bannerSchema,
+  body: z.object({
+    name: z.string({
+      required_error: "Name is required",
+    }),
+    description: z.string(),
+    url: z.string({
+      required_error: "URL is required",
+    }),
+    categoryId: z.string().optional(),
+  }).partial({
+    name: true,
+    url: true,
+    description: true,
+    categoryId: true,
+    
+  }).refine((data)=>(!!data.categoryId)||(!!data.description)||(!!data.name)||(!!data.url)),
 });
 
 export type EditBannerInput = z.TypeOf<typeof editBannerSchema>;

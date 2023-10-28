@@ -1,5 +1,4 @@
 "use client";
-
 import axios from "axios";
 import { useState } from "react";
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react";
@@ -15,14 +14,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 // import { AlertModal } from "@/components/modals/alert-modal";
 
-import { BannerColumn } from "./columns";
+import { ProductColumn } from "./columns";
 import { apiRoute } from "@/utils/apiRoutes";
 import { toast } from "@/components/ui/use-toast";
 import DeleteAlert from "@/components/ui/delete-alert";
 import Loader from "@/components/ui/Loader";
 
 interface CellActionProps {
-  data: BannerColumn;
+  data: ProductColumn;
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data }) => {
@@ -34,18 +33,18 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const onConfirm = async () => {
     try {
       setLoading(true);
-      const res = await axios.delete(`${apiRoute.banner}/${data!.id}`, {
+      const res = await axios.delete(`${apiRoute.product}/${data!.id}`, {
         withCredentials: true,
       });
       router.refresh();
       toast({
         title: "Success",
-        description: "Banner Deleted Successfully",
+        description: "Product Deleted Successfully",
       });
     } catch (error) {
       toast({
         title: "Error",
-        description: "Banner Deleted Successfully",
+        description: "Product Deleted Successfully",
         variant:"destructive"
       });
     } finally {
@@ -61,7 +60,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
       {!!data && (
         <DeleteAlert
           isOpen={open}
-          label={data.name + " Banner"}
+          label={data.name + " Product"}
           onDelete={onConfirm}
           loading={loading}
         />
@@ -77,7 +76,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
           <DropdownMenuItem
-            onClick={() => router.push(`/dashboard/admin/banner/${data.id}`)}
+            onClick={() => router.push(`/dashboard/product/${data.id}`)}
           >
             <Edit className="mr-2 h-4 w-4" /> Update
           </DropdownMenuItem>

@@ -34,10 +34,23 @@ export const createProduct = async (input: CreateProductInput["body"], userId: s
 export const getProductById=async(id:string)=>{
   try {
     const product = await prisma.product.findFirst({
-      where:{
+      where: {
         id,
-      }
-    })
+      },
+      include: {
+        images: {
+          select: {
+            url: true,
+          },
+        },
+        category: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
     return product
   } catch (e:any) {
     console.log(e.message)
@@ -73,7 +86,17 @@ export const editProduct = async (
       },
     },
     include: {
-      images: true,
+      images: {
+        select: {
+          url: true,
+        },
+      },
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
   return product;
@@ -112,7 +135,18 @@ export const getAllProductsByMerchant = async (merchantId: string) => {
         createdById: merchantId,
       },
       include: {
-        images: true,
+        images: {
+          select:{
+            url:true,
+            
+          }
+        },
+        category:{
+          select:{
+            id: true,
+            name: true,
+          }
+        }
       },
     });
     return products;
@@ -265,12 +299,11 @@ export const deleteSize = async (id: string) => {
 };
 
 
-export const getAllSize = async(categoryId:string)=>{
+export const getAllSize = async()=>{
   try {
+    console.log("merchantsizegetall")
     const sizes = await prisma.size.findMany({
-      where:{
-        categoryId,
-      }
+      
     })
     return sizes
   } catch (error:any) {
