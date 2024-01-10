@@ -1,10 +1,21 @@
 import { Prisma, Product } from "@prisma/client";
 
 import prisma from "../utils/prisma";
-import { CreateColorInput, CreateProductInput, CreateSizeInput, EditColorInput, EditProductInput, EditSizeInput } from "../schema/merchant.schema";
+import {
+  CreateColorInput,
+  CreateProductInput,
+  CreateSizeInput,
+  EditColorInput,
+  EditProductInput,
+  EditSizeInput,
+} from "../schema/merchant.schema";
+import { includes } from "lodash";
 
 // Product apis
-export const createProduct = async (input: CreateProductInput["body"], userId: string) => {
+export const createProduct = async (
+  input: CreateProductInput["body"],
+  userId: string
+) => {
   const product = await prisma.product.create({
     data: {
       name: input.name,
@@ -15,7 +26,7 @@ export const createProduct = async (input: CreateProductInput["body"], userId: s
       createdById: userId,
       images: {
         createMany: {
-          data: input.images.map((image) => {
+          data: input.images?.map((image) => {
             return {
               url: image.url,
             };
@@ -31,7 +42,7 @@ export const createProduct = async (input: CreateProductInput["body"], userId: s
   return product;
 };
 
-export const getProductById=async(id:string)=>{
+export const getProductById = async (id: string) => {
   try {
     const product = await prisma.product.findFirst({
       where: {
@@ -51,11 +62,11 @@ export const getProductById=async(id:string)=>{
         },
       },
     });
-    return product
-  } catch (e:any) {
-    console.log(e.message)
+    return product;
+  } catch (e: any) {
+    console.log(e.message);
   }
-}
+};
 
 export const editProduct = async (
   input: EditProductInput["body"],
@@ -101,10 +112,7 @@ export const editProduct = async (
   });
   return product;
 };
-export const deleteProduct = async (
-  userId: string,
-  productId: string
-) => {
+export const deleteProduct = async (userId: string, productId: string) => {
   try {
     const product = await prisma.product.delete({
       where: {
@@ -136,17 +144,16 @@ export const getAllProductsByMerchant = async (merchantId: string) => {
       },
       include: {
         images: {
-          select:{
-            url:true,
-            
-          }
+          select: {
+            url: true,
+          },
         },
-        category:{
-          select:{
+        category: {
+          select: {
             id: true,
             name: true,
-          }
-        }
+          },
+        },
       },
     });
     return products;
@@ -213,30 +220,35 @@ export const deleteColor = async (id: string) => {
   }
 };
 
-
-export const getAllColor = async()=>{
+export const getAllColor = async () => {
   try {
-    const colors = await prisma.color.findMany({})
-    return colors
-  } catch (error:any) {
-    console.log(error.message)
-  }
-}
-
-
-
-export const getColorId = async(id:string)=>{
-  try {
-     const color = await prisma.color.findFirst({
-      where:{
-        id,
+    const colors = await prisma.color.findMany({
+      include:{
+        _count:{
+          select:{
+            products:true
+          }
+        }
       }
-     });
-     return color;
-  } catch (error:any) {
-    console.log(error.message)
+    });
+    return colors;
+  } catch (error: any) {
+    console.log(error.message);
   }
-}
+};
+
+export const getColorId = async (id: string) => {
+  try {
+    const color = await prisma.color.findFirst({
+      where: {
+        id,
+      },
+    });
+    return color;
+  } catch (error: any) {
+    console.log(error.message);
+  }
+};
 
 // size apis
 export const createSize = async (input: CreateSizeInput["body"]) => {
@@ -298,45 +310,36 @@ export const deleteSize = async (id: string) => {
   }
 };
 
-
-export const getAllSize = async()=>{
+export const getAllSize = async () => {
   try {
-    console.log("merchantsizegetall")
-    const sizes = await prisma.size.findMany({
-      
-    })
-    return sizes
-  } catch (error:any) {
-    console.log(error.message)
+    console.log("merchantsizegetall");
+    const sizes = await prisma.size.findMany({});
+    return sizes;
+  } catch (error: any) {
+    console.log(error.message);
   }
-}
+};
 
 //get all categorie
 
-export const getAllCategories = async(merchantId: string)=>{
+export const getAllCategories = async (merchantId: string) => {
   try {
     const categories = await prisma.category.findMany({
-      include:{
+      include: {
         products: {
-          where:{
+          where: {
             createdById: merchantId,
           },
-          include:{
-            images:true
-          }
-        }
-      }
-    })
-    return categories
-  } catch (error:any) {
-    console.log(error.message)
+          include: {
+            images: true,
+          },
+        },
+      },
+    });
+    return categories;
+  } catch (error: any) {
+    console.log(error.message);
   }
-}
-
+};
 
 //TODO analytics route comes here
-
-
-
-
-

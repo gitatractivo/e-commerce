@@ -7,10 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/ui/data-table";
 import { useParams } from "next/navigation";
-import { columns, CategoryColumn } from "./columns";
+import { columns, ColorColumn } from "./columns";
 
 interface CategoryClientProps {
-  data: CategoryColumn[];
+  data: ColorColumn[];
 }
 
 
@@ -22,8 +22,8 @@ const CategoryClient = ({data}: CategoryClientProps) => {
   return (
     <>
       <div className="flex items-center justify-between">
-        <Heading title="Category" description="Manage Category" />
-        <Button onClick={() => router.push(`/dashboard/admin/category/new`)}>
+        <Heading title="Color" description="Manage Color" />
+        <Button onClick={() => router.push(`/dashboard/color/new`)}>
           <Plus className="mr-2 h-4 w-4" /> Add
         </Button>
       </div>

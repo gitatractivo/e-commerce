@@ -3,6 +3,7 @@ import {
   createBannerHandler,
   createCategoryHandler,
   deleteBannerHandler,
+  deleteCategoryHandler,
   editBannerHandler,
   editCategoryHandler,
   getAllBannersByCategoryIdHandler,
@@ -37,7 +38,7 @@ router.post(
   createCategoryHandler
 );
 
-router.put(
+router.patch(
   "/category/:categoryId",
   [requireAdmin, validateResource(editCategorySchema)],
   editCategoryHandler
@@ -52,7 +53,7 @@ router.get(
 router.delete(
   "/category/:categoryId",
   [requireAdmin, validateResource(getDeleteCategoryByIdSchema)],
-  deleteBannerHandler
+  deleteCategoryHandler
 );
 
 router.get("/category", [requireAdmin], getAllCategoriesHandler);

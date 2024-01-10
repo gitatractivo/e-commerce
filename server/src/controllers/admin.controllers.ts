@@ -49,6 +49,7 @@ export const editCategoryHandler = async (
 ) => {
   try {
     const user: User = res.locals.user;
+    console.log("controller", req.params.categoryId);
     const category = await editCategory(req.body, req.params.categoryId);
     return res.status(200).json({
       message: "Category Edited Successfully",
@@ -176,6 +177,7 @@ export const deleteBannerHandler = async (
 ) => {
   try {
     const user: User = res.locals.user;
+    console.log("controller",req.params.bannerId)
     const banner = await deleteBannerById( req.params.bannerId);
     return res.status(200).json({
       message: "Banner Deleted Successfully",
