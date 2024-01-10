@@ -27,9 +27,10 @@ import { apiRoute } from "@/utils/apiRoutes";
 
 const formSchema = z.object({
   name: z.string().min(1),
+  value: z.string().min(1),
 });
 
-type CategoryFormValues = z.infer<typeof formSchema>;
+type ColorFormValues = z.infer<typeof formSchema>;
 
 interface Props {
   initialData: Category | null;
@@ -40,40 +41,41 @@ const CategoryForm = ({ initialData }: Props) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const form = useForm<CategoryFormValues>({
+  const form = useForm<ColorFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       name: "",
+      value: "",
     },
   });
   console.log(initialData)
 
-  const title = initialData ? "Edit Category" : "Create Category";
-  const description = initialData ? "Edit a Category." : "Add a new Category";
-  const toastMessage = initialData ? "Category updated." : "Category created.";
+  const title = initialData ? "Edit Color" : "Create Color";
+  const description = initialData ? "Edit a Color." : "Add a new Color";
+  const toastMessage = initialData ? "Color updated." : "Color created.";
   const action = initialData ? "Save changes" : "Create";
 
-  const onSubmit = async (data: CategoryFormValues) => {
+  const onSubmit = async (data: ColorFormValues) => {
     try {
       setLoading(true);
       let res;
       
       if (!!initialData) {
-        res = await axios.patch(`${apiRoute.category}/${initialData.id}`, data, {
+        res = await axios.patch(`${apiRoute.color}/${initialData.id}`, data, {
           withCredentials: true,
         });
       } else {
-        res = await axios.post(`${apiRoute.category}`, data, {
+        res = await axios.post(`${apiRoute.color}`, data, {
           withCredentials: true,
         });
       }
       if (res.status === 200 || res.status === 201) {
         router.refresh();
-        router.push(`/dashboard/admin/category/`);
+        router.push(`/dashboard/color/`);
         toast({
           title: "Success",
           description:
-            "Category " + (initialData ? "Edited" : "Created") + " Successfully",
+            "Color " + (initialData ? "Edited" : "Created") + " Successfully",
         });
       }
     } catch (error: any) {
@@ -91,14 +93,14 @@ const CategoryForm = ({ initialData }: Props) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      const res = await axios.delete(`${apiRoute.category}/${initialData!.id}`, {
+      const res = await axios.delete(`${apiRoute.color}/${initialData!.id}`, {
         withCredentials: true,
       });
       router.refresh();
-      router.push(`/dashboard/admin/category`);
+      router.push(`/dashboard/color`);
       toast({
         title: "Success",
-        description: "Category Deleted Successfully",
+        description: "Color Deleted Successfully",
       });
     } catch (error: any) {
       toast({
@@ -117,7 +119,7 @@ const CategoryForm = ({ initialData }: Props) => {
       {!!initialData && (
         <DeleteAlert
           isOpen={open}
-          label={initialData.name + " Category"}
+          label={initialData.name + " Color"}
           onDelete={onDelete}
           loading={loading}
         />
@@ -152,7 +154,25 @@ const CategoryForm = ({ initialData }: Props) => {
                     <FormControl>
                       <Input
                         disabled={loading}
-                        placeholder="Category Name"
+                        placeholder="Color Name"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )
+              }
+            />
+            <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) =>  (
+                  <FormItem>
+                    <FormLabel>Value</FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={loading}
+                        placeholder="Color Value"
                         {...field}
                       />
                     </FormControl>

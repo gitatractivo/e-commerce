@@ -81,4 +81,9 @@ LiSNO2XehLQvSxzBuBU2KHSkWfcFVXc7cfNR5UHKM2nUSChEyvKS1Whg9n5sN4Hz
 afkT/Dx/vJkzxMmdm680wOdfLlWWrKPvAOs374qos5s47vVRQZMhRPU3
 -----END RSA PRIVATE KEY-----
 `,
+
+  googleClientId:
+    "308553191168-fn8v0kqgqphm1uh55irhaqhj15pke8vp.apps.googleusercontent.com",
+  googleClientSecret: "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",
+  googleOauthRedirectUrl: "http://localhost:5000/api/sessions/oauth/google",
 };

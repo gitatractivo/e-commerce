@@ -27,7 +27,8 @@ import { z } from "zod";
 import axios from "axios";
 import { apiRoute } from "@/utils/apiRoutes";
 import { useRouter } from "next/navigation";
-
+import { ReloadIcon } from "@radix-ui/react-icons";
+// import { cookies } from "next/headers";
 
 
 interface Props {}
@@ -45,10 +46,11 @@ const LoginForm: React.FC<Props> = () => {
   const router = useRouter();
   const form = useForm<IForm>({
     resolver: zodResolver(schema),
-    defaultValues: {
+        defaultValues: {
       email: "",
       password: "",
     },
+    
   });
 
   const onSubmit = async(data: IForm) => {
@@ -57,10 +59,14 @@ const LoginForm: React.FC<Props> = () => {
     const res = await axios.post(apiRoute.login, data, {
       withCredentials: true,
     });
-    // if(res.status===200){
-    //   router.push("/")
-    // }
+    if(res.status===200){
+      // const cookieStore = cookies();
+      // const user = JSON.parse(cookieStore.get("user")?.value || "{}");
+      // console.log(user)
+      // router.push("/")
+    }
   };
+  console.log(form.formState)
   return (
     <Card className="w-full max-w-[400px]">
       <CardHeader>
@@ -106,8 +112,21 @@ const LoginForm: React.FC<Props> = () => {
                 </FormItem>
               )}
             />
-            <Link href="/forgot-password" className="text-sm self-end space-y-2 text-muted-foreground">Forgot Password?</Link>
-            <Button type="submit" className="w-full mt-2">
+            <Link
+              href="/forgot-password"
+              className="text-sm self-end space-y-2 text-muted-foreground"
+            >
+              Forgot Password?
+            </Link>
+            <Button
+              type="submit"
+              className="w-full mt-2 disabled:opacity-70 disabled:pointer-events-none"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting&&(
+
+              <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Login
             </Button>
           </form>

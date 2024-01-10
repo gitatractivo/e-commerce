@@ -19,6 +19,7 @@ import {
   getAllCategoriesHandler,
   getSizeHandler,
   deleteSizeHandler,
+  createColorHandler,
 } from "../controllers/merchant.controllers";
 
 const router = express.Router();
@@ -61,7 +62,7 @@ router.get("/product", [requireMerchant], getAllProductsHandler);
 router.post(
   "/color",
   [requireMerchant, validateResource(createColorSchema)],
-  createProductHandler
+  createColorHandler
 );
 // edit colors
 router.put(

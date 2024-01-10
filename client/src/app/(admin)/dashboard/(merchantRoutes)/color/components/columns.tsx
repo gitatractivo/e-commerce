@@ -4,7 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { CellAction } from "./cell-action";
 
-export type CategoryColumn = {
+export type ColorColumn = {
   id: string;
   name: string;
   description: string;
@@ -13,7 +13,7 @@ export type CategoryColumn = {
   products:number;
 };
 
-export const columns: ColumnDef<CategoryColumn>[] = [
+export const columns: ColumnDef<ColorColumn>[] = [
   {
     accessorKey: "name",
     header: "Name",

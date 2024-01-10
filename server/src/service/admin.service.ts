@@ -38,6 +38,7 @@ export const editCategory = async (
   data: EditCategoryInput["body"],
   categoryId: EditCategoryInput["params"]["categoryId"]
 ) => {
+  console.log("service", data, categoryId)
   try {
     const category = await prisma.category.update({
       where: {
@@ -162,6 +163,7 @@ export const getBannerById = async (bannerId: string) => {
 };
 
 export const deleteBannerById = async (bannerId: string) => {
+  console.log("service",bannerId)
   try {
     const banner = await prisma.banner.delete({
       where: {
