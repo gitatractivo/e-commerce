@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
+  
 }
 
 const NavBar = ({ children, className }: Props) => {

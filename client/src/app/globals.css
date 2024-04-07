@@ -91,7 +91,6 @@
 }
 
 .backnavdrop {
-  //-webkit-backdrop-filter: saturate(180%) blur(5px);
   backdrop-filter: blur(15px);
   backface-visibility: hidden;
   perspective: 1000;

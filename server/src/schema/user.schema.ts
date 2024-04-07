@@ -95,13 +95,13 @@ export const changePassword = object({
   }),
 });
 
-export const forgotPassword = object({
-  body: object({
-    email: string({
-      required_error: "Email is required",
-    }).email("Not a valid email"),
-  }),
-})
+  export const forgotPassword = object({
+    body: object({
+      email: string({
+        required_error: "Email is required",
+      }).email("Not a valid email"),
+    }),
+  })
 
 export const verifyEmailForgotPassword = object({
   query: object({
